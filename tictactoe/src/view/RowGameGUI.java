@@ -11,11 +11,20 @@ import model.RowGameModel;
 import controller.RowGameController;
 
 public class RowGameGUI {
-    public JFrame gui = new JFrame("Tic Tac Toe");
-    public RowGameModel gameModel = new RowGameModel();
-    public JButton[][] blocks = new JButton[3][3];
-    public JButton reset = new JButton("Reset");
-    public JTextArea playerturn = new JTextArea();
+
+    private JFrame gui = new JFrame("Tic Tac Toe");
+    public JFrame getGUI() { return this.gui; }
+
+    // value is not used?
+    //private RowGameModel gameModel = new RowGameModel();
+
+    private JButton[][] blocks = new JButton[3][3];
+    public JButton[][] getBlocks() { return this.blocks; }
+
+    private JButton reset = new JButton("Reset");
+
+    private JTextArea playerturn = new JTextArea();
+    public JTextArea getPlayerTurn() { return this.playerturn; }
 
     /**
      * Creates a new game initializing the GUI.
@@ -71,7 +80,8 @@ public class RowGameGUI {
      * @param column The column that contains the block
      */
     public void updateBlock(RowGameModel gameModel, int row, int column) {
-	blocks[row][column].setText(gameModel.blocksData[row][column].getContents());
-	blocks[row][column].setEnabled(gameModel.blocksData[row][column].getIsLegalMove());
+	    
+        blocks[row][column].setText(gameModel.getBlocksData()[row][column].getContents());
+	    blocks[row][column].setEnabled(gameModel.getBlocksData()[row][column].getIsLegalMove());
     }
 }
