@@ -1,9 +1,11 @@
 package model;
 
-
 public class RowGameModel {
 
     public static final String GAME_END_NOWINNER = "Game ends in a draw";
+
+    public static final String[] PLAYER_IDS = {"X", "O"};
+    public static final String[] PLAYER_STRINGS = {"1", "2"};
 
     private RowBlockModel[][] blocksData = new RowBlockModel[3][3];
     public RowBlockModel[][] getBlocksData() { return this.blocksData; }
@@ -26,7 +28,6 @@ public class RowGameModel {
         super();
 	
         for (int row = 0; row < 3; row++) {
-	    
             for (int col = 0; col < 3; col++) {
 		
                 blocksData[row][col] = new RowBlockModel(this);	    
@@ -42,5 +43,10 @@ public class RowGameModel {
     public void setFinalResult(String finalResult) {
 	
         this.finalResult = finalResult;
+    }
+
+    public void setBlock(int xBlockPos, int yBlockPos, String playerID) {
+    
+        blocksData[xBlockPos][yBlockPos].setContents(playerID);
     }
 }

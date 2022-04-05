@@ -14,22 +14,26 @@ public class TestExample {
 
     @Before
     public void setUp() {
-	game = new RowGameController();
+
+	    game = new RowGameController();
     }
 
     @After
     public void tearDown() {
-	game = null;
+	
+        game = null;
     }
 
     @Test
     public void testNewGame() {
-        assertEquals ("1", game.gameModel.player);
-        assertEquals (9, game.gameModel.movesLeft);
+    
+        assertEquals ("1", game.getGameModel().getPlayer());
+        assertEquals (9, game.getGameMode().getMovesLeft());
     }
 
     @Test(expected = IllegalArgumentException.class)
     public void testNewBlockViolatesPrecondition() {
-	RowBlockModel block = new RowBlockModel(null);
+	
+        RowBlockModel block = new RowBlockModel(null);
     }
 }
