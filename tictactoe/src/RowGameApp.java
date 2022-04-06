@@ -7,7 +7,7 @@ public class RowGameApp
      */
     public static void main(String[] args) {
         
-        RowGameController game = new RowGameController();
+        RowGameController game = new RowGameController(3);
         game.getGameView().getGUI().setVisible(true);
     }
 }

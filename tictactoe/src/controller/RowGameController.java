@@ -9,21 +9,26 @@ import view.RowGameGUI;
 public class RowGameController {
 
     private RowGameModel gameModel;
+	public RowGameModel getGameModel() { return this.gameModel; }
 
     private RowGameGUI gameView;
 	public RowGameGUI getGameView() { return this.gameView; }
 
+	private int boardSize;
+
     /**
      * Creates a new game initializing the GUI.
      */
-    public RowGameController() {
+    public RowGameController(int boardSize) {
+
+		this.boardSize = boardSize;
 	
-		gameModel = new RowGameModel();
+		gameModel = new RowGameModel(boardSize);
 
-		gameView = new RowGameGUI(this);
+		gameView = new RowGameGUI(this, boardSize);
 
-        for(int row = 0; row<3; row++) {
-            for(int column = 0; column<3 ;column++) {
+        for(int row = 0; row<boardSize; row++) {
+            for(int column = 0; column<boardSize ;column++) {
 	        
 				gameModel.getBlocksData()[row][column].setContents("");
 				gameModel.getBlocksData()[row][column].setIsLegalMove(true);
@@ -38,6 +43,19 @@ public class RowGameController {
      * @param block The block to be moved to by the current player
      */
     public void move(JButton block) {
+
+		int blockPos = gameView.getBlockPosition(block);
+		int x = blockPos / 10;
+		int y = blockPos % 10;
+
+		// if the move is invalid, do nothing
+		if (!gameModel.getBlocksData()[x][y].getIsLegalMove()) {
+
+			return;
+		}
+
+		// we update the move to be illegal after this point
+		gameModel.getBlocksData()[x][y].setIsLegalMove(false);
 
 		// decrement moves left
 		gameModel.setMovesLeft(gameModel.getMovesLeft() - 1);
@@ -58,9 +76,6 @@ public class RowGameController {
 		gameView.getPlayerTurnText().setText("'" + nextPlayerID + "' : Player " + nextPlayer);
 	
 		// update model
-		int blockPos = gameView.getBlockPosition(block);
-		int x = blockPos / 10;
-		int y = blockPos % 10;
 		gameModel.setBlock(x, y, curPlayerID);
 
 		// update view
@@ -70,10 +85,11 @@ public class RowGameController {
 		gameModel.setPlayer(nextPlayer);
 
 		// check for win conditions
-		if ( gameModel.getMovesLeft() < 7 && ( 	horizontalWinFound(gameModel, curPlayerID) || 
-												verticalWinFound(gameModel, curPlayerID) || 
-												inclineDiagWinFound(gameModel, curPlayerID) || 
-												declineDiagWinFound(gameModel, curPlayerID) ) ) {
+		if ( gameModel.getMovesLeft() < gameModel.getTotalMoves() - (gameModel.getBlocksData().length - 1) && 
+			(horizontalWinFound(gameModel, curPlayerID) || 
+			verticalWinFound(gameModel, curPlayerID) || 
+			inclineDiagWinFound(gameModel, curPlayerID) || 
+			declineDiagWinFound(gameModel, curPlayerID)) ) {
 
 			// cur player won, set end game stuff
 			gameModel.setFinalResult("Player " + curPlayer + " wins!");
@@ -219,8 +235,8 @@ public class RowGameController {
      */
     public void endGame() {
 
-		for(int row = 0;row<3;row++) {
-	    	for(int column = 0;column<3;column++) {
+		for(int row = 0;row<boardSize;row++) {
+	    	for(int column = 0;column<boardSize;column++) {
 		
 				gameView.getBlocks()[row][column].setEnabled(false);
 	    	}
@@ -232,8 +248,8 @@ public class RowGameController {
      */
     public void resetGame() {
 
-        for(int row = 0;row<3;row++) {
-            for(int column = 0;column<3;column++) {
+        for(int row = 0;row<boardSize;row++) {
+            for(int column = 0;column<boardSize;column++) {
         
 				gameModel.getBlocksData()[row][column].reset();
 				gameModel.getBlocksData()[row][column].setIsLegalMove(true);
@@ -241,9 +257,9 @@ public class RowGameController {
             }
         }
         
-		gameModel.setPlayer("1");
-        gameModel.setMovesLeft(9);
+		gameModel.setPlayer(RowGameModel.PLAYER_STRINGS[0]);
+        gameModel.setMovesLeft(boardSize * boardSize);
 		gameModel.setFinalResult(null);
-        gameView.getPlayerTurnText().setText("Player 1 to play 'X'");
+        gameView.getPlayerTurnText().setText("Player " + gameModel.getPlayer() + " to play " + RowGameModel.PLAYER_IDS[Integer.parseInt(gameModel.getPlayer()) - 1]);
     }
 }

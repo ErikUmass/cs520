@@ -7,7 +7,6 @@ import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.util.Arrays;
 
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -25,7 +24,7 @@ public class RowGameGUI {
     // value from original code is not used?
     //private RowGameModel gameModel = new RowGameModel();
 
-    private JButton[][] blockButtons = new JButton[3][3];
+    private JButton[][] blockButtons;
     public JButton[][] getBlocks() { return this.blockButtons; }
     public int getBlockPosition(JButton block) {
 
@@ -53,14 +52,16 @@ public class RowGameGUI {
     /**
      * Creates a new game initializing the GUI.
      */
-    public RowGameGUI(RowGameController controller) {
+    public RowGameGUI(RowGameController controller, int boardSize) {
+
+        blockButtons = new JButton[boardSize][boardSize];
 
         gui.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
         gui.setSize(new Dimension(500, 350));
         gui.setResizable(true);
 
         JPanel gamePanel = new JPanel(new FlowLayout());
-        JPanel game = new JPanel(new GridLayout(3,3));
+        JPanel game = new JPanel(new GridLayout(boardSize,boardSize));
         gamePanel.add(game, BorderLayout.CENTER);
 
         JPanel options = new JPanel(new FlowLayout());
@@ -81,9 +82,9 @@ public class RowGameGUI {
             }
         });
 
-        // Initialize a JButton for each cell of the 3x3 game board.
-        for(int row = 0; row<3; row++) {
-            for(int column = 0; column<3 ;column++) {
+        // Initialize a JButton for each cell of the game board.
+        for(int row = 0; row<boardSize; row++) {
+            for(int column = 0; column<boardSize ;column++) {
                 blockButtons[row][column] = new JButton();
                 blockButtons[row][column].setPreferredSize(new Dimension(75,75));
                 game.add(blockButtons[row][column]);
